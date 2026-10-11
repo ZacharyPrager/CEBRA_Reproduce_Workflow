@@ -1,3 +1,23 @@
+#!/bin/bash
+# One-time setup. Run on the LOGIN node (needs internet):  bash setup_env.sh
+# Creates the "cebra" conda env, installs packages, records versions, downloads the data.
+set -euo pipefail
+
+# run from the folder this script is in, no matter where it was called from
+cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+echo "Project folder: $PWD"
+mkdir -p data env logs outputs   # logs/ must exist before sbatch, or the job dies with no log
+
+ENV_NAME=${ENV_NAME:-cebra}
+PY_VER=${PY_VER:-3.11}
+TORCH_INDEX=${TORCH_INDEX:-https://download.pytorch.org/whl/cu121}
+
+module load anaconda3 2>/dev/null || module load miniforge3 2>/dev/null || module load miniconda3 2>/dev/null || \
+  echo "WARN: no conda module loaded; assuming conda is already on PATH"
+
+# keep caches in scratch, not home (small quota)
+SCRATCH_DIR=${SCRATCH_DIR:-${SCRATCH:-$PWD}}
+export CONDA_PKGS_DIRS="$SCRATCH_DIR/.conda_pkgs"
 export PIP_CACHE_DIR="$SCRATCH_DIR/.pip_cache"
 
 # making the environment directory 
@@ -13,12 +33,8 @@ set -u
 pip install --upgrade pip
 pip install torch --index-url "$TORCH_INDEX" #specific torch version for the CUDA
 pip install -r requirements.txt
-if [ "${INSTALL_FULL:-0}" = "1" ]; then
-  pip install -r requirements-full.txt || echo "WARN: topology packages failed to install; --full will skip topology"
-fi
 
 # exact environment for tracibility
-mkdir -p env
 pip freeze > env/pip_freeze.txt
 conda env export --no-builds > env/environment_export.yml
 python - <<'EOF' | tee env/versions.txt
@@ -32,10 +48,5 @@ EOF
 # data downloading
 export CEBRA_DATADIR="$PWD/data"
 python download_data.py | tee env/data_manifest.txt
-
-curl -fL -o data/rat_demo_example_output.h5 \
-  https://github.com/AdaptiveMotorControlLab/CEBRA-demos/raw/main/rat_demo_example_output.h5 \
-  && sha256sum data/rat_demo_example_output.h5 | tee -a env/data_manifest.txt \
-  || echo "WARN: precomputed .h5 download failed; Betti numbers will be skipped (everything else runs)"
 
 echo "Setup complete. Next: run sbatch run_cebra.sbatch to start!!"
