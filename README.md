@@ -3,7 +3,7 @@ Reproduces the first experiment of the CEBRA demo **["Encoding of space, hippoca
 ---
 Run everything on the **login node**. This is because we are running a job that is not interactive. Running **sbatch** inside a compute node will crash and not work
 
-## Inference Workflow & Job Scripts
+## Complete Workflow
 
 ### Step 1: Enter ICE-Cluster
 Replace <username> with your username
@@ -59,36 +59,72 @@ Inside `outputs/run_<JOB-ID>/figures/` you will find all the interactive simulat
 1. Python version 3.11 installed with `setup_env.sh`
 2. CEBRA version 0.6.1 (with datasets and integrations) installed with `requirements.txt`
 3. PyTorch 2.14.0, CUDA 13.0 build (`+cu130`), installed with `setup_env.sh`. This build only runs on newer NVIDIA GPUs (A100, H100, L40S), so `run_cebra.sbatch` requests an H100.
-4. 4. matplotlib version >= 3.8 installed with `requirements.txt`
+4. matplotlib version >= 3.8 installed with `requirements.txt`
 
 **See `env/pip_freeze.txt` to view every package's exact version**
 
 ## Model, Data & Artifact Traceability
 
-### Model:
+### Model
 CEBRA-Behavior, same settings as notebook cell 12 (`offset10-model`, 3-D output, 5,000 iterations, seed 0).
 CEBRA has no pretrained weights for this demo, so the job trains the model, saves it, reloads it, and runs inference from the saved copy.
 CEBRA documentation can be found [Here](https://cebra.ai/docs/)
 
-### Data:
+### Data
 `rat-hippocampus-single-achilles` from CEBRA's built-in datasets
 Saved to `data/rat_hippocampus/achilles.jl`; its SHA-256 hash is in `env/data_manifest.txt`.
 The first 80% is used for training and the last 20% is held out for testing.
 
-### Artifact Traceability:
+### Artifact Traceability
 Checkpoints are saved in `outputs/run_<JOB-ID>/checkpoints/`:
    1. `cebra_posdir3_split.pt`: the real model
    2. `cebra_posdir3_shuffled_split.pt`: the shuffled control
 Each checkpoint's SHA-256 hash is recorded in `run_info.json`, and `validate.py` checks that the saved model matches it.
 Each job log also prints the git commit of the code that ran (`git_commit=`).
 
-### Code Version:
+### Code Version
 CEBRA code: version 0.6.1 ([PyPI](https://pypi.org/project/cebra/0.6.1/)) · [GitHub](https://github.com/AdaptiveMotorControlLab/CEBRA) · [Website](https://cebra.ai/)
 
-### Sources:
+### Sources
 1. CEBRA paper: Schneider, Lee & Mathis, *Nature* (2023). [Here](https://www.nature.com/articles/s41586-023-06031-6)
 2. CEBRA code: [GitHub](https://github.com/AdaptiveMotorControlLab/CEBRA) [Website](https://cebra.ai/)
 3. Original notebook demo: [Encoding of space, hippocampus (CA1)](https://cebra.ai/docs/demo_notebooks/Demo_hippocampus.html)
+
+## Inference Workflow & Job Scripts
+### Complete script breakdown
+1. `setup_env.sh` - Creates the `cebra` environment. 
+2. `requirements.txt` - Python packages
+3. `download_data.py` - Downloads the dataset from CEBRA and prints SHA-256 hash
+4. `run_cebra.sbatch` - The exact Slurm job. Requests resources, run the model and validate 
+5. `common.sh` - Activates environment, sets job settings, records job data, and track GPU usage
+6. `demo_hippocampus.py` - The entire demo. Creates interactive plots and uses CEBRA's demo (cells 1-30)
+7. `validate.py` - 7 checks each showing the expected vs actual results from the model
+8. `watch_job.py` - CLI UI/UX element which tells you when the job is finished and quick summary 
+9. `collect_evidence.sh` - saves `sacct` stats after the job finishes
+
+### Resource Requests
+1. Number of compute nodes: 1
+2. Time requested: 1 hour
+3. CPU cores: 2  cores
+4. GPUs: 1 h100 GPU
+5. Memory: 16G
+
+### Inputs 
+No user-provided input is needed. The only input is the rat hippocampus dataset (`data/rat_hippocampus/achilles.jl`), which `setup_env.sh` downloads for you 
+
+### Outputs 
+All outputs are found: `outputs/run_<JOB-ID>/`
+1. `figures/01_data_raster_and_position.png`: Neural activity and rat position
+2. `figures/02_behavior_train / 03_behavior_validation (.png + .html)`: Real model's embedding on training data
+3. `figures/04_shuffle_train / 05_shuffle_validation (.png + .html)`: Shuffled-label control
+4. `checkpoints/*.pt, cebra_posdir.pt`: saved models
+5. `embedding_train.npy, embedding_test.npy`: The inference output
+6. `pred_test.npy, labels_test.npy`: Decoded vs. true position on held-out data
+7. `metrics.json`: Goodness of fit and decoding results
+8. `run_info.json`: Versions, GPU, job ID, timings, checkpoint hashes
+9. `validation.txt`: The 7 check report
+10. `gpu_<JOB-ID>.csv`: GPU usage over time
+11. `slurm_accounting.txt`: Runtime and memory stats
 
 ## Execution Evidence & Logs
 ## Validation of Results
