@@ -43,3 +43,4 @@ Run after the job finishes. Saves run time, memory use and exit state to `output
 bash collect_evidence.sh <JOB-ID>
 ```
 ## Visualization Outputs
+Inside `outputs/run_<JOB-ID>/figures/` you will find all the interactive simulations and data visualized. The interactive ones are with the `.html` extension. You can view these using Georgia Tech's ICE Cluster OnDemand platform. The link is found here (https://gatech.service-now.com/home?id=kb_article_view&sysparm_article=KB0042133).
