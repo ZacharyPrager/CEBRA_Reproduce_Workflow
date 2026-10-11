@@ -48,8 +48,8 @@ Inside `outputs/run_<JOB-ID>/figures/` you will find all the interactive simulat
 
 ## Environment & Setup
 
-###`setup_env.sh` does the following things:
-1. Creates the directories `data/`,`env/`,`logs/`,`outputs/`. This is needed for organization purposes.
+### `setup_env.sh` does the following things:
+1. Creates the directories `data/`,`env/`,`logs/`,`outputs/`. 
 2. Loads the `conda` module and creates the `cebra` environment
 3. Installs the `CEBRA`,`matplotlib`,`PyTorch` dependencies
 4. Records the version dependencies in `env/pip_freeze.txt`,`env/environment_export.yml` and `env/versions.txt`.
@@ -57,11 +57,11 @@ Inside `outputs/run_<JOB-ID>/figures/` you will find all the interactive simulat
 
 ### Packages Breakdown
 1. Python version 3.11 installed with `setup_env.sh`
-2. CEBRA version 0.6.1 (with datasets) installed with `requirements.txt`
-3. PyTorch version 2.14.0 (more information later) installed with `setup_env.sh`
-4. matplotlib version >= 3.8 installed with `requirements.txt`
+2. CEBRA version 0.6.1 (with datasets and integrations) installed with `requirements.txt`
+3. PyTorch 2.14.0, CUDA 13.0 build (`+cu130`), installed with `setup_env.sh`. This build only runs on newer NVIDIA GPUs (A100, H100, L40S), so `run_cebra.sbatch` requests an H100.
+4. 4. matplotlib version >= 3.8 installed with `requirements.txt`
 
-**PyTorch is dependent on the specific GPU you choose in `run_cebra.sbatch`. For this demonstration, I used the `h100` GPU.**
+**See `env/pip_freeze.txt` to view every package's exact version**
 
 ## Model, Data & Artifact Traceability
 ## Execution Evidence & Logs
