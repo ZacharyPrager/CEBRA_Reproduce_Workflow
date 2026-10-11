@@ -5,7 +5,7 @@ Run everything on the **login node**. This is because we are running a job that 
 
 ## Workflow
 
-### Step 1: Enter ICE-Clustor
+### Step 1: Enter ICE-Cluster
 Replace <username> with your username
 ```bash
 ssh <username>@login-ice.pace.gatech.edu
