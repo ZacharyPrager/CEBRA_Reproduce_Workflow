@@ -64,5 +64,31 @@ Inside `outputs/run_<JOB-ID>/figures/` you will find all the interactive simulat
 **See `env/pip_freeze.txt` to view every package's exact version**
 
 ## Model, Data & Artifact Traceability
+
+### Model:
+CEBRA-Behavior, same settings as notebook cell 12 (`offset10-model`, 3-D output, 5,000 iterations, seed 0).
+CEBRA has no pretrained weights for this demo, so the job trains the model, saves it, reloads it, and runs inference from the saved copy.
+CEBRA documentation can be found [Here](https://cebra.ai/docs/)
+
+### Data:
+`rat-hippocampus-single-achilles` from CEBRA's built-in datasets
+Saved to `data/rat_hippocampus/achilles.jl`; its SHA-256 hash is in `env/data_manifest.txt`.
+The first 80% is used for training and the last 20% is held out for testing.
+
+### Artifact Traceability:
+Checkpoints are saved in `outputs/run_<JOB-ID>/checkpoints/`:
+   1. `cebra_posdir3_split.pt`: the real model
+   2. `cebra_posdir3_shuffled_split.pt`: the shuffled control
+Each checkpoint's SHA-256 hash is recorded in `run_info.json`, and `validate.py` checks that the saved model matches it.
+Each job log also prints the git commit of the code that ran (`git_commit=`).
+
+### Code Version:
+CEBRA code: version 0.6.1 ([PyPI](https://pypi.org/project/cebra/0.6.1/)) · [GitHub](https://github.com/AdaptiveMotorControlLab/CEBRA) · [Website](https://cebra.ai/)
+
+### Sources:
+1. CEBRA paper: Schneider, Lee & Mathis, *Nature* (2023). [Here](https://www.nature.com/articles/s41586-023-06031-6)
+2. CEBRA code: [GitHub](https://github.com/AdaptiveMotorControlLab/CEBRA) [Website](https://cebra.ai/)
+3. Original notebook demo: [Encoding of space, hippocampus (CA1)](https://cebra.ai/docs/demo_notebooks/Demo_hippocampus.html)
+
 ## Execution Evidence & Logs
 ## Validation of Results
