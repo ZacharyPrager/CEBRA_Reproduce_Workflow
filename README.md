@@ -3,12 +3,13 @@ Reproduces the first experiment of the CEBRA demo **["Encoding of space, hippoca
 ---
 Run everything on the **login node**. This is because we are running a job that is not interactive. Running **sbatch** inside a compute node will crash and not work
 
+## Workflow
+
 ### Step 1: Enter ICE-Clustor
 Replace <username> with your username
 ```bash
 ssh <username>@login-ice.pace.gatech.edu
 ```
-## Workflow
 
 ### Step 2: Getting the workflow
 Go into your scratch folder and clone the repo in order to obtain the code / workflow. Then enter its directory.
