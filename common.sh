@@ -21,7 +21,7 @@ echo "git_commit=$(git rev-parse HEAD 2>/dev/null || echo 'not-a-git-repo')"
 echo "python=$(which python)"
 nvidia-smi || echo "WARN: nvidia-smi unavailable"
 if [ ! -d "$CEBRA_DATADIR" ]; then
-  echo "ERROR: $CEBRA_DATADIR missing. Run 'bash jobs/setup_env.sh' on the login node first." >&2
+  echo "ERROR: $CEBRA_DATADIR missing. Run 'bash setup_env.sh' on the login node first." >&2
   exit 1
 fi
 # Background GPU usage sampler (every 10 s) -> evidence of resource use
