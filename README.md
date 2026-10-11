@@ -3,7 +3,7 @@ Reproduces the first experiment of the CEBRA demo **["Encoding of space, hippoca
 ---
 Run everything on the **login node**. This is because we are running a job that is not interactive. Running **sbatch** inside a compute node will crash and not work
 
-## Workflow
+## Inference Workflow & Job Scripts
 
 ### Step 1: Enter ICE-Cluster
 Replace <username> with your username
@@ -45,3 +45,24 @@ bash collect_evidence.sh <JOB-ID>
 ```
 ## Visualization Outputs
 Inside `outputs/run_<JOB-ID>/figures/` you will find all the interactive simulations and data visualized. The interactive ones are with the `.html` extension. You can view these using Georgia Tech's ICE Cluster OnDemand platform. The link is found here (https://gatech.service-now.com/home?id=kb_article_view&sysparm_article=KB0042133).
+
+## Environment & Setup
+
+###`setup_env.sh` does the following things:
+1. Creates the directories `data/`,`env/`,`logs/`,`outputs/`. This is needed for organization purposes.
+2. Loads the `conda` module and creates the `cebra` environment
+3. Installs the `CEBRA`,`matplotlib`,`PyTorch` dependencies
+4. Records the version dependencies in `env/pip_freeze.txt`,`env/environment_export.yml` and `env/versions.txt`.
+5. Downloads the dataset and records its SHA-256 hash in `env/data_manifest.txt`.
+
+### Packages Breakdown
+1. Python version 3.11 installed with `setup_env.sh`
+2. CEBRA version 0.6.1 (with datasets) installed with `requirements.txt`
+3. PyTorch version 2.14.0 (more information later) installed with `setup_env.sh`
+4. matplotlib version >= 3.8 installed with `requirements.txt`
+
+**PyTorch is dependent on the specific GPU you choose in `run_cebra.sbatch`. For this demonstration, I used the `h100` GPU.**
+
+## Model, Data & Artifact Traceability
+## Execution Evidence & Logs
+## Validation of Results
