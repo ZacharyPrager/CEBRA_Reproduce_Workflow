@@ -18,8 +18,7 @@ source common.sh
 
 ITERS=${ITERS:-5000}
 OUT=outputs/run_${SLURM_JOB_ID}
-EXTRA=""; [ "${FULL:-0}" = "1" ] && EXTRA="--full"
-python demo_hippocampus.py --out-dir "$OUT" --max-iterations "$ITERS" $EXTRA
+python demo_hippocampus.py --out-dir "$OUT" --max-iterations "$ITERS"
 set +e
 python validate.py "$OUT" | tee "$OUT/validation.txt"
 VAL_STATUS=${PIPESTATUS[0]}
