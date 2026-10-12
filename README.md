@@ -127,4 +127,29 @@ All outputs are found: `outputs/run_<JOB-ID>/`
 11. `slurm_accounting.txt`: Runtime and memory stats
 
 ## Execution Evidence & Logs
+### Run overview
+All evidence of the reproduced run is found in `outputs/run_6189853/`
+1. Slurm job ID: 6189853
+2. GPU : h100
+3. Time: 01:08:711
+4. Final: COMPLETED exit code 0.00
+5. Validation 7/7 checks successful and passed
+
+### Evidence files breakdown
+1. `cebra-hippocampus-6189853.out`: Job info and metrics
+2. `cebra-hippocampus-6189853.err`: Training progress and warnings imported from CEBRA's demo page
+3. `gpu_6189853.csv`: GPU usage and memory usage tracked
+4. `slurm_accounting.txt`: `sacct` the runtime, memory and exit code
+5. `validation.txt`: This is the output of `validate.py`, shows the expected vs observed results
+6. `run_info.json`: Additional run information like software versions, GPU, model settings, etc
+7. `metrics.json`: Goodness of fit and decoding errors
+8. `checkpoints\`: Holds the saved trained models. You can load models again without having to train them
+**Figures are the visual output (html files are for interactive plots and png's are pictures of the data)**
+
+### Failures 
+This project had a lot of debugging and troubleshooting, and I spent a long time fixing these errors. 
+1. Moving from jupyter notebooks to python scripts. I always have issues running jupyter notebooks, so I had to pivot to a python script which functions the same way. Also, this meant creating functions that save the outputs and data like the visualization charts.
+2. Originally, the `run_cebra.sbatch` script didn't specify a GPU. This caused the model to run on the CPU which led to 10+ minute runtimes. I changed the script to include a specific GPU which reduced runtime to about 1 minute. Using the logs I was able to spot this issue with the `CUDA=FALSE` flag.
+3. In order to see if the job was in queue or running, I had to constantly spam `squeue`. Therefore, I made a python script which checks this for me.
+
 ## Validation of Results
