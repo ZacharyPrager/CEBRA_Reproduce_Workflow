@@ -1,4 +1,4 @@
---------------------------------------
+---------------------------------------
 Begin Slurm Prolog: Oct-11-2026 17:27:27
 Job ID:    6189853
 User ID:   zprager3
@@ -13,7 +13,7 @@ node=atl1-1-03-013-3-0.pace.gatech.edu start=2026-10-11T17:27:33-04:00
 cpus=2 mem_per_node=16384MB gpus=0
 git_commit=f9c3e7213268a03bc460eb72945b13828ceffa92
 python=/home/hice1/zprager3/scratch/.conda/envs/cebra/bin/python
-Sun Oct 11 17:27:33 2026
+Sun Oct 11 17:27:33 2026       
 +-----------------------------------------------------------------------------------------+
 | NVIDIA-SMI 615.71.09              KMD Version: 615.71.09     CUDA UMD Version: 13.4     |
 +-----------------------------------------+------------------------+----------------------+
@@ -98,6 +98,3 @@ Partition:     ice-gpu
 QOS:           coc-ice
 Nodes:         atl1-1-03-013-3-0
 ---------------------------------------
-
-
-
