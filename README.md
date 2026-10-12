@@ -194,3 +194,20 @@ Job ID: 6198990
         observed: real 5.640757657051086 vs shuffled 6.1955155210495
 ```
 Based on the `validation.txt` all tests were passed and the actual values are shown above.
+
+## Documentation Notes and Reproducibility
+
+### Cleanup
+```bash
+scancel <JOB-ID>
+conda env remove -n cebra
+rm -rf data/ outputs/ logs/
+```
+### Sources and AI usage
+1. Used the Georgia Tech PACE ICE cluster documentation for the available GPUs, Slurm settings, and OnDemand.
+2. Used the [Slurm documentation](https://slurm.schedmd.com/quickstart.html) to learn how `sbatch`, `squeue`, and `sacct` work.
+3. Used the [CEBRA documentation](https://cebra.ai/docs/) and the [hippocampus demo notebook](https://cebra.ai/docs/demo_notebooks/Demo_hippocampus.html) as the base for `demo_hippocampus.py` and the expected results.
+4. AI wrote some of the code for the scripts and helped debug errors. However, I made most of the design decisions and still worked through / troubleshot the scripts myself. I'm pointing this out as the syllabus allows AI usage when properly cited. Notable uses in this assignment are: 
+     a. AI helped rewrite the `demo_hippocampus` and the functions that save the interactive graphs
+     b. AI helped me design the 7 step validation test
+     c. AI helped me structure how each script calls the others. For example, `run_cebra.sbatch` loads `common.sh` (environment + GPU logging), runs `demo_hippocampus.py`, then runs `validate.py` on its outputs.
