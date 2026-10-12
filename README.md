@@ -153,3 +153,44 @@ This project had a lot of debugging and troubleshooting, and I spent a long time
 3. In order to see if the job was in queue or running, I had to constantly spam `squeue`. Therefore, I made a python script which checks this for me.
 
 ## Validation of Results
+
+### Validation methods
+`validate.py` functions as the main validator of results and runs at the end of every job. In this script there are 7 tests which do the following: 
+1. Checks that all the specified output files exist. If any don't exist then this test will fail
+2. Using embeddings (the models output which are 3D points), the check can see if the shape matches the expected shape and if the values are NaN. The expected sizes come from `run_info.json`.
+3. Finds the SHA-246 hash of the model and compares it to the `demo_hippocampus.py` hash in the `run_info.json`. SHA-256 is good for this task as if a small piece of information changes, there will be a drastic change. Thus, using this we can quickly see if the model in results is the same model.
+4. Effectivity running embeddings again and tracking their difference. If the difference is too large (> .0001) then that indicates an error. Thus, we can compare the embeddings directly
+5. Uses these embeddings to predict the rats position on the data. The position must have an error less than 0.2m
+6. This shuffles the behavior labels. If the shuffled model was similar to the normal model, the model would not be working (it would be finding fake patterns). The real model must do much better than the shuffled one. The higher number the better for testing.
+7. InfoNCE is CEBRA's training los function. This is a good way of validating the data as it comes directly from CEBRA. This value should be 5.53 for the real model and 6.16 for the shuffled.
+
+### Smoke test
+Our smoke test will use the specifier `ITERS` in `run_cebra.sbatch` to run less iterations of training (from 5000 to 200).
+```bash
+sbatch --export=ALL,ITERS=200 run_cebra.sbatch
+```
+Job ID: 6198990
+```text
+[PASS] output files present
+        expected: all of cebra_posdir.pt, embedding_train.npy, embedding_test.npy, pred_test.npy, labels_test.npy, metrics.json, run_info.json
+        observed: missing: none
+[PASS] embedding shapes and values
+        expected: train (8142, 3), test (2036, 3), all finite
+        observed: train (8142, 3), test (2036, 3), finite=True
+[PASS] checkpoint SHA-256 matches run_info.json
+        expected: 1ee5004427a803b6...
+        observed: 1ee5004427a803b6...
+[PASS] re-running inference from checkpoint reproduces saved embedding
+        expected: max |diff| < 1e-4
+        observed: max |diff| = 0.00e+00
+[PASS] position decoding median error
+        expected: < 0.2 m
+        observed: 0.1103 m (R2=0.735)
+[PASS] real model beats shuffled-label control
+        expected: real err < 0.5 x control err, and real R2 > control R2
+        observed: real err 0.1103 m vs control 0.4383 m; R2 0.735 vs 0.003
+[PASS] InfoNCE goodness of fit: real < shuffled
+        expected: real < shuffled (notebook: ~5.53 vs ~6.16)
+        observed: real 5.640757657051086 vs shuffled 6.1955155210495
+```
+Based on the `validation.txt` all tests were passed and the actual values are shown above.
