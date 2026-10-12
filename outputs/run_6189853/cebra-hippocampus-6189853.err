@@ -1,0 +1,14 @@
+/home/hice1/zprager3/.local/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+^M  0%|          | 0/5000 [00:00<?, ?it/s]^Mpos: -0.6571 neg:  6.9259 total:  6.2688 temperature:  1.0000:   0%|          | 0/5000 [00:01<?, ?it/s]^Mpos: -0.6571 neg:  6.9259 total:  6.2688 temperature:  >
+^M  0%|          | 0/500 [00:00<?, ?it/s]^M 11%|█▏        | 57/500 [00:00<00:00, 567.29it/s]^M 23%|██▎       | 116/500 [00:00<00:00, 576.11it/s]^M 35%|███▌      | 175/500 [00:00<00:00, 579.12it/s]^M 47%|█>
+^M  0%|          | 0/5000 [00:00<?, ?it/s]^Mpos: -0.6432 neg:  6.9349 total:  6.2917 temperature:  1.0000:   0%|          | 0/5000 [00:00<?, ?it/s]^Mpos: -0.6640 neg:  6.9435 total:  6.2795 temperature:  >
+^M  0%|          | 0/500 [00:00<?, ?it/s]^M 11%|█▏        | 57/500 [00:00<00:00, 567.95it/s]^M 23%|██▎       | 115/500 [00:00<00:00, 574.41it/s]^M 35%|███▍      | 173/500 [00:00<00:00, 576.75it/s]^M 46%|█>
+/home/hice1/zprager3/.local/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+
+
+
+
+
+
